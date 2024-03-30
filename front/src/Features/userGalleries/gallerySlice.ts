@@ -1,11 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { Gallery } from "../../types";
+import { Gallery, ValidationError } from "../../types";
 import { createPictureGallery, deleteOwnPicture, fetchGallery, fetchUserGallery } from "./galleryThunks";
 
 interface galleryState {
   gallery: Gallery[] | [];
   userGallery: Gallery[] | [];
+
+  creatingPictureError: ValidationError | null;
 
   galleryLoading: boolean;
   userGalleryLoading: boolean;
@@ -16,6 +18,8 @@ interface galleryState {
 const initialState: galleryState = {
   gallery: [],
   userGallery: [],
+
+  creatingPictureError: null,
 
   galleryLoading: false,
   userGalleryLoading: false,
@@ -66,7 +70,8 @@ const gallerySlice = createSlice({
     builder.addCase(createPictureGallery.fulfilled, (state: galleryState) => {
       state.creatingPictureLoading = false;
     });
-    builder.addCase(createPictureGallery.rejected, (state: galleryState) => {
+    builder.addCase(createPictureGallery.rejected, (state: galleryState, {payload: error}) => {
+      state.creatingPictureError = error || null;
       state.creatingPictureLoading = false;
     });
   },
@@ -76,6 +81,8 @@ export const galleryReducer = gallerySlice.reducer;
 
 export const selectGalleries = (state: RootState) => state.gallery.gallery;
 export const selectUserGalleries = (state: RootState) => state.gallery.userGallery;
+
+export const selectCreatingPictureError = (state: RootState) => state.gallery.creatingPictureError;
 
 export const selectLoadingGalleries = (state: RootState) => state.gallery.galleryLoading;
 export const selectLoadingUserGalleries = (state: RootState) => state.gallery.userGalleryLoading;

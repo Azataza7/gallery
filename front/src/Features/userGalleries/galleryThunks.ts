@@ -40,22 +40,22 @@ export const deleteAdminUsersPicture = createAsyncThunk<
   });
 }); 
 
-export const createPictureGallery = createAsyncThunk<void, GalleryData>(
-  'gallery/newPicture', async (data, {rejectWithValue}) => {
-    try {
-      const formData = new FormData();
-      formData.append('title', data.title)
-      if (data.image) {
-        formData.append("image", data.image);
-      }
-      
-      await axiosApi.post('/gallery', formData, {headers: {Authorization: data.user}})
-
-    } catch (e) {
-      if (isAxiosError(e) && e.response && e.response.status === 422) {
-        return rejectWithValue(e.response.data);
-      }
-      throw e;
+export const createPictureGallery = createAsyncThunk<void, GalleryData, { rejectValue: ValidationError }>
+("gallery/newPicture", async (data, { rejectWithValue }) => {
+  try {
+    const formData = new FormData();
+    formData.append("title", data.title);
+    if (data.image) {
+      formData.append("image", data.image);
     }
+
+    await axiosApi.post("/gallery", formData, {
+      headers: { Authorization: data.user },
+    });
+  } catch (e) {
+    if (isAxiosError(e) && e.response && e.response.status === 422) {
+      return rejectWithValue(e.response.data);
+    }
+    throw e;
   }
-);
+});

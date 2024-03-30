@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Grid, TextField, Input, CircularProgress } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectLoadingCreatePicture } from "./gallerySlice";
+import { selectCreatingPictureError, selectLoadingCreatePicture } from "./gallerySlice";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 
 import { GalleryData, User } from "../../types";
@@ -14,6 +14,7 @@ const AddPictureGallery = () => {
   const navigate = useNavigate();
   const onLoading = useAppSelector(selectLoadingCreatePicture);
   const user: User | null = useAppSelector(selectUser);
+  const error = useAppSelector(selectCreatingPictureError);
   const [pictureData, setPictureData] = useState<GalleryData>({
     title: "",
     image: null,
@@ -37,10 +38,19 @@ const AddPictureGallery = () => {
     }
   };
 
+  const getFieldError = (fieldName: string) => {
+    try {
+      return error?.errors[fieldName].message;
+    } catch {
+      return undefined;
+    }
+  };
+
+
   const handleSubmitCreate: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     
-    await dispatch(createPictureGallery(pictureData));
+    await dispatch(createPictureGallery(pictureData)).unwrap();
     navigate('/');
   }
 
@@ -61,12 +71,21 @@ const AddPictureGallery = () => {
             onChange={handleChange}
             fullWidth
             sx={{maxWidth: '90%'}}
+            error={Boolean(getFieldError('title'))}
+            helperText={getFieldError('title')}
           />
         </Grid>
         <Grid item xs={12}>
-          <Grid component="div" sx={{display: 'flex', alignItems: 'center', margin: '10px 0'}}>
+          <Grid component="div" sx={{
+            display: 'flex', alignItems: 'center', margin: '10px 0'
+            }}>
             <FileUploadIcon/>
-            <Input type="file" name="image" onChange={handleFileChange}/>
+            <Input 
+            type="file" 
+            name="image" 
+            onChange={handleFileChange}
+            required
+            />
           </Grid>
         </Grid>
         <Button type="submit" disabled={onLoading} sx={{
@@ -81,7 +100,10 @@ const AddPictureGallery = () => {
           </Button>
       </Grid>
 
-      <Grid component="div" sx={{flexBasis: '40%', padding: '20px', bgcolor: '#242424', display: pictureData.image ? 'flex': 'none'}}>
+      <Grid component="div" sx={{
+        flexBasis: '40%', padding: '20px', bgcolor: '#242424', 
+        display: pictureData.image ? 'flex': 'none'}}
+        >
         {pictureData.image && (
               <img src={URL.createObjectURL(pictureData.image)} alt="Preview" 
               style={{ maxWidth: '100%', maxHeight: '100%', marginRight: 10 }} 
