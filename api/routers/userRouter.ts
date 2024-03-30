@@ -89,7 +89,6 @@ userRouter.post(
 
 userRouter.post("/sessions", async (req, res, next) => {
   try {
-    const token = randomUUID();
 
     const user = await User.findOne({ email: req.body.email });
 
@@ -97,7 +96,6 @@ userRouter.post("/sessions", async (req, res, next) => {
       return res.status(400).send({ error: "email or password is wrong" });
     }
 
-    user.token = token;
     await user.save();
     return res.send({ message: "Success!", user });
   } catch (e) {

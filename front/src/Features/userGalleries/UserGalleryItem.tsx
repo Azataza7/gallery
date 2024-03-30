@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Gallery } from "../../types";
 import { Grid, Card, CardMedia, CardContent, Typography, CardActions, Button } from "@mui/material";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import PictureModal from "../../Components/Modals/PictureModal";
 import { apiURL } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectUser } from "../users/usersSlice";
-import { deleteOwnPicture } from "./galleryThunks";
+import { deleteOwnPicture, fetchUserGallery } from "./galleryThunks";
 import { selectLoadingDeletePictureGalleries } from "./gallerySlice";
 
 interface Props {
@@ -15,6 +15,7 @@ interface Props {
 
 const UserGalleryItem:React.FC<Props> = ({userGallery}) => {
   const user = useAppSelector(selectUser);
+  const userId = useParams().id;
   const dispatch = useAppDispatch();
   const [openModal, setOpenModal] = useState(false);
   const onLoadingDelete = useAppSelector(selectLoadingDeletePictureGalleries);
@@ -34,6 +35,7 @@ const UserGalleryItem:React.FC<Props> = ({userGallery}) => {
     }
 
     await dispatch(deleteOwnPicture(data));
+    await dispatch(fetchUserGallery(userId ? userId : ''));
   };
 
   return (
