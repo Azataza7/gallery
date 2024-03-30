@@ -14,3 +14,9 @@ export interface newUserData {
   password: string;
   displayName: string;
 }
+
+export interface newGalleryData {
+  author: string;
+  title: string;
+  image: string;
+}
