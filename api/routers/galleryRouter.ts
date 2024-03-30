@@ -34,17 +34,6 @@ galleryRouter.get("/:id", async (req: Request, res: Response, next: NextFunction
   }
 );
 
-galleryRouter.get("/my-gallery", auth, async(req: RequestWithUser, res: Response, next: NextFunction) => {
-  try {
-    const results = await Gallery.find({ user: req.user?._id })
-    .populate('user', '_id email displayName role token');
-
-    return res.send(results);
-  } catch (e) {
-    next(e);
-  }
-});
-
 galleryRouter.delete(
   "/my-gallery/:id",
   auth,

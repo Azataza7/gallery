@@ -45,3 +45,9 @@ export interface Gallery {
   title: string;
   image: string;
 }
+
+export interface GalleryData {
+  user: string;
+  title: string;
+  image: File | null;
+}

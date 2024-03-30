@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosApi from "../../axiosApi";
-import { Gallery } from "../../types";
+import { Gallery, GalleryData, ValidationError } from "../../types";
+import { isAxiosError } from "axios";
 
 export const fetchGallery = createAsyncThunk<Gallery[]>(
   'gallery', async () => {
@@ -29,8 +30,32 @@ export const deleteOwnPicture = createAsyncThunk<void, dataType>(
   }
 );
 
-export const deleteAdminUsersPicture = createAsyncThunk<void, dataType>(
-  'gallery/admin-delete', async (data) => {
-    await axiosApi.delete(`/gallery/${data.id}`, {headers: {Authorization: data.token}});
+export const deleteAdminUsersPicture = createAsyncThunk<
+  void,
+  dataType,
+  { rejectValue: ValidationError }
+>("gallery/admin-delete", async (data) => {
+  await axiosApi.delete(`/gallery/${data.id}`, {
+    headers: { Authorization: data.token },
+  });
+}); 
+
+export const createPictureGallery = createAsyncThunk<void, GalleryData>(
+  'gallery/newPicture', async (data, {rejectWithValue}) => {
+    try {
+      const formData = new FormData();
+      formData.append('title', data.title)
+      if (data.image) {
+        formData.append("image", data.image);
+      }
+      
+      await axiosApi.post('/gallery', formData, {headers: {Authorization: data.user}})
+
+    } catch (e) {
+      if (isAxiosError(e) && e.response && e.response.status === 422) {
+        return rejectWithValue(e.response.data);
+      }
+      throw e;
+    }
   }
-) 
+);

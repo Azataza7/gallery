@@ -46,6 +46,7 @@ const UserMenu = () => {
       <Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={handleClose} keepMounted>
         <MenuItem>Profile</MenuItem>
         <MenuItem component={NavLink} to={`/my-gallery/${user._id}`}>My Gallery</MenuItem>
+        <MenuItem component={NavLink} to={`/add-picture`}>Add Picture</MenuItem>
         <MenuItem onClick={() => setOpenModal(true)}>Logout</MenuItem>
       </Menu>
     </>
