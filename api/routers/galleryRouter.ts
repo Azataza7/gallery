@@ -9,7 +9,18 @@ const galleryRouter = Router();
 
 galleryRouter.get('/', async(req: Request, res: Response, next: NextFunction) => {
   try {
-    const results = await Gallery.find();
+    const results = await Gallery.find().populate('user', '_id email displayName role token');
+
+    return res.send(results);
+  } catch (e) {
+    next(e);
+  }
+});
+
+galleryRouter.get('/my-gallery', auth, async(req: RequestWithUser, res: Response, next: NextFunction) => {
+  try {
+    const results = await Gallery.find({ user: req.user?._id })
+    .populate('user', '_id email displayName role token');
 
     return res.send(results);
   } catch (e) {
@@ -29,7 +40,7 @@ async(req: RequestWithUser, res: Response, next: NextFunction) => {
 
   try {
     const newGallery: newGalleryData = {
-      author: user._id,
+      user: user._id,
       title: title,
       image: authorImage.filename,
     };

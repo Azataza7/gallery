@@ -16,7 +16,7 @@ export interface newUserData {
 }
 
 export interface newGalleryData {
-  author: string;
+  user: string;
   title: string;
   image: string;
 }
