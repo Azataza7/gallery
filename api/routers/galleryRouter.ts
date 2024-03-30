@@ -18,7 +18,9 @@ galleryRouter.get('/', async(req: Request, res: Response, next: NextFunction) =>
   }
 });
 
-galleryRouter.get('/my-gallery', auth, async(req: RequestWithUser, res: Response, next: NextFunction) => {
+galleryRouter.get('/my-gallery', 
+auth, 
+async(req: RequestWithUser, res: Response, next: NextFunction) => {
   try {
     const results = await Gallery.find({ user: req.user?._id })
     .populate('user', '_id email displayName role token');
@@ -29,7 +31,42 @@ galleryRouter.get('/my-gallery', auth, async(req: RequestWithUser, res: Response
   }
 });
 
-galleryRouter.post('/', auth, imagesUpload.single('image'), 
+galleryRouter.delete(
+  "/my-gallery/:id",
+  auth,
+  async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.user?._id;
+      const galleryId = req.params.id;
+
+      const galleryItem = await Gallery.findById(galleryId);
+
+      if (!galleryItem || !userId) {
+        return res.status(404).send({error: 'gallery or user not found'});
+      }
+
+      if (galleryItem.user.toString() !== userId.toString()) {
+        return res.status(403).send({ error: "Unauthorized action." });
+      }
+
+      const deletedGalleryItem = await Gallery.findByIdAndDelete(galleryId);
+
+      if (!deletedGalleryItem) {
+        return res
+          .status(404)
+          .send({ error: "Photo not found or already deleted." });
+      }
+
+      return res.send({ message: "success", deletedGalleryItem });
+    } catch (e) {
+      next(e);
+    }
+  }
+);
+
+galleryRouter.post('/', 
+auth, 
+imagesUpload.single('image'), 
 async(req: RequestWithUser, res: Response, next: NextFunction) => { 
   const authorImage = req.file;
   const user = req.user;
