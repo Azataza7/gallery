@@ -4,7 +4,8 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { Alert, Avatar, Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-import { selectLoginError } from './usersSlice';
+import ErrorIcon from '@mui/icons-material/Error';
+import { selectLoginError, selectLoginLoading } from './usersSlice';
 import { googleLogin, login } from './usersThunks';
 import { GoogleLogin } from '@react-oauth/google';
 
@@ -12,6 +13,7 @@ const Login = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const error = useAppSelector(selectLoginError);
+  const onLoading = useAppSelector(selectLoginLoading)
 
   const [state, setState] = useState<LoginMutation>({
     email: '',
@@ -50,8 +52,8 @@ const Login = () => {
           paddingBottom: 15,
         }}
       >
-        <Avatar sx={{m: 1, bgcolor: 'secondary.main'}}>
-          <LockOpenIcon/>
+        <Avatar sx={{m: 1, bgcolor:'secondary.main'}}>
+          {!onLoading ? <LockOpenIcon /> : <ErrorIcon/>}
         </Avatar>
         <Typography component="h1" variant="h5" color="purple">
           Sign in

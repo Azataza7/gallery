@@ -5,11 +5,12 @@ import { Avatar, Box, Button, Container, Grid, Link, TextField, Typography } fro
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { register } from './usersThunks';
-import { selectUserError } from './usersSlice';
+import { selectRegisterUserError, selectRegisterUserLoading } from './usersSlice';
 
 const Register = () => {
   const dispatch = useAppDispatch();
-  const error = useAppSelector(selectUserError);
+  const error = useAppSelector(selectRegisterUserError);
+  const onLoading: boolean = useAppSelector(selectRegisterUserLoading);
   const navigate = useNavigate();
 
   const [state, setState] = useState<RegisterMutation>({
@@ -109,6 +110,7 @@ const Register = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            disabled={onLoading}
           >
             Sign Up
           </Button>
