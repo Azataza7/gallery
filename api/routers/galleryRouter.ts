@@ -18,6 +18,22 @@ galleryRouter.get('/', async(req: Request, res: Response, next: NextFunction) =>
   }
 });
 
+galleryRouter.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.params.id;
+
+    try {
+      const results = await Gallery.find({ user: userId }).populate(
+        "user",
+        "_id email displayName role token"
+      );
+
+      return res.send(results);
+    } catch (e) {
+      next(e);
+    }
+  }
+);
+
 galleryRouter.get('/my-gallery', 
 auth, 
 async(req: RequestWithUser, res: Response, next: NextFunction) => {
