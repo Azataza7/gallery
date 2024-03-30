@@ -32,7 +32,6 @@ const UserMenu = () => {
     return navigate('/');
   };
 
-
   return (
     <>
       <LogOutModal

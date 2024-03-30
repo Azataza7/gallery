@@ -46,7 +46,7 @@ const GalleryItem: React.FC<Props> = ({userPicture}) => {
        <Card sx={{ width: 250 }}>
       <CardMedia
         component="img"
-        alt="green iguana"
+        alt={userPicture.title + 'image'}
         height="180"
         image={apiURL + '/' + userPicture.image}
         sx={{cursor: 'pointer'}}

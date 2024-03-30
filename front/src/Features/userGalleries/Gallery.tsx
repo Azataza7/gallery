@@ -27,7 +27,7 @@ const Gallery = () => {
     <>
     <Grid component='div' sx={{
       display: 'flex', alignItems: 'center', flexWrap: 'wrap', 
-      justifyContent: 'space-between', gap: '10px', mt: 2
+      gap: '10px', mt: 2
     }}>
       {galleryContainer}
     </Grid>
