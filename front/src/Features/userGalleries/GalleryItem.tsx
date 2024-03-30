@@ -4,6 +4,9 @@ import { apiURL } from "../../constants";
 import { NavLink } from "react-router-dom";
 import PictureModal from "../../Components/Modals/PictureModal";
 import { Gallery } from "../../types";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { selectUser } from "../users/usersSlice";
+import { deleteAdminUsersPicture, fetchGallery } from "./galleryThunks";
 
 interface Props {
   userPicture: Gallery;
@@ -11,6 +14,8 @@ interface Props {
 
 const GalleryItem: React.FC<Props> = ({userPicture}) => {
   const [openModal, setOpenModal] = useState(false);
+  const user = useAppSelector(selectUser);
+  const dispatch = useAppDispatch();
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -19,6 +24,16 @@ const GalleryItem: React.FC<Props> = ({userPicture}) => {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
+
+  const handleAdminDeleteUsersPicture = async () => {
+    const data = {
+      id: userPicture._id,
+      token: user ? user.token : ''
+    }
+
+    await dispatch(deleteAdminUsersPicture(data))
+    await dispatch(fetchGallery());
+  }
 
   return (
     <>
@@ -57,7 +72,9 @@ const GalleryItem: React.FC<Props> = ({userPicture}) => {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Share</Button>
+        {user?.role === 'admin' && 
+        <Button size="small" onClick={handleAdminDeleteUsersPicture}>Delete</Button>
+        }
       </CardActions>
     </Card>
     </Grid>

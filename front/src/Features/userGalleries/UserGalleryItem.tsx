@@ -4,13 +4,20 @@ import { Grid, Card, CardMedia, CardContent, Typography, CardActions, Button } f
 import { NavLink } from "react-router-dom";
 import PictureModal from "../../Components/Modals/PictureModal";
 import { apiURL } from "../../constants";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { selectUser } from "../users/usersSlice";
+import { deleteOwnPicture } from "./galleryThunks";
+import { selectLoadingDeletePictureGalleries } from "./gallerySlice";
 
 interface Props {
   userGallery: Gallery;
 }
 
 const UserGalleryItem:React.FC<Props> = ({userGallery}) => {
+  const user = useAppSelector(selectUser);
+  const dispatch = useAppDispatch();
   const [openModal, setOpenModal] = useState(false);
+  const onLoadingDelete = useAppSelector(selectLoadingDeletePictureGalleries);
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -18,6 +25,15 @@ const UserGalleryItem:React.FC<Props> = ({userGallery}) => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+  };
+
+  const handleDeleteUser = async () => {
+    const data = {
+      id: userGallery._id,
+      token: user ? user.token : ''
+    }
+
+    await dispatch(deleteOwnPicture(data));
   };
 
   return (
@@ -48,15 +64,13 @@ const UserGalleryItem:React.FC<Props> = ({userGallery}) => {
           {userGallery.title}
         </Typography>
         </Grid>
-        <Typography 
-        variant="body2" 
-        color="text.secondary"
-        sx={{textDecoration: 'none', '&:hover': {textDecoration: 'underline'}}}>
-          by {userGallery.user.displayName}
-        </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Delete</Button>
+        {userGallery.user._id === user?._id && 
+        <Button size="small" onClick={handleDeleteUser} disabled={onLoadingDelete}>
+          Delete
+          </Button>
+        }
       </CardActions>
     </Card>
     </Grid>

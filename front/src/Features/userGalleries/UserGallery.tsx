@@ -19,6 +19,10 @@ const UserGallery = () => {
     dispatch(fetchUserGallery(userId ? userId : ''));
   }, [dispatch, userId]);
 
+  if (userGallery.length === 0) {
+    return <Grid component="h2" sx={{textAlign: 'center'}}>No Pictures</Grid>
+  }
+
    const userGalleryContainer: JSX.Element[] = userGallery.map((userItem) => (
     <UserGalleryItem key={userItem._id} userGallery={userItem}/>
   ))
@@ -29,8 +33,8 @@ const UserGallery = () => {
 
   return (
     <>
-    <Typography variant="h4">
-      {userGallery[0].user.displayName}'s Gallery
+    <Typography variant="h4" sx={{mt: 2}}>
+      {userGallery[0]?.user.displayName}'s Gallery
       </Typography>
     <Grid component="div" sx={{
       display: 'flex', alignItems: 'center', flexWrap: 'wrap', 

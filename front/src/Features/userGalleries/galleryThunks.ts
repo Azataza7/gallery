@@ -8,7 +8,7 @@ export const fetchGallery = createAsyncThunk<Gallery[]>(
 
     return response.data;
   }
-)
+);
 
 export const fetchUserGallery = createAsyncThunk<Gallery[], string>(
   'gallery/userGallery', async (userId) => {
@@ -16,4 +16,21 @@ export const fetchUserGallery = createAsyncThunk<Gallery[], string>(
 
     return response.data;
   }
-)
+);
+
+interface dataType {
+  id: string;
+  token: string;
+}
+
+export const deleteOwnPicture = createAsyncThunk<void, dataType>(
+  'gallery/user-delete', async (data) => {
+    await axiosApi.delete(`/gallery/my-gallery/${data.id}`, {headers: {Authorization: data.token}})
+  }
+);
+
+export const deleteAdminUsersPicture = createAsyncThunk<void, dataType>(
+  'gallery/admin-delete', async (data) => {
+    await axiosApi.delete(`/gallery/${data.id}`, {headers: {Authorization: data.token}});
+  }
+) 
