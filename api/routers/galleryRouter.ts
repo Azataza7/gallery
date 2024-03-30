@@ -4,6 +4,7 @@ import { imagesUpload } from "../multer";
 import auth, { RequestWithUser } from "../middleware/auth";
 import { newGalleryData } from "../types";
 import mongoose from "mongoose";
+import permit from "../middleware/permit";
 
 const galleryRouter = Router();
 
@@ -57,5 +58,27 @@ async(req: RequestWithUser, res: Response, next: NextFunction) => {
     next(e);
   }
 });
+
+galleryRouter.delete("/:id",
+  auth,
+  permit("admin"),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const galleryId = req.params.id;
+
+      const deletedGalleryItem = await Gallery.findByIdAndDelete(galleryId);
+
+      if (!deletedGalleryItem) {
+        return res
+          .status(404)
+          .send({ error: "Photo not found or already deleted." });
+      }
+
+      return res.send({ message: "success", deletedGalleryItem});
+    } catch (e) {
+      next(e);
+    }
+  }
+);
 
 export default galleryRouter;

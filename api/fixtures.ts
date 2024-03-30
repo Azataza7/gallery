@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import config from "./config";
 import User from "./models/User";
+import Gallery from "./models/Gallery";
 
 
 const run = async () => {
@@ -9,6 +10,7 @@ const run = async () => {
 
   try {
     await db.dropCollection('users');
+    await db.dropCollection('galleries');
 
   } catch (e) {
     console.log('Collections were not present, skipping drop');
@@ -19,7 +21,6 @@ const run = async () => {
       email: "superUser@gmail.com",
       password: "admin123",
       token: "adminToken",
-      avatar: "fixtures/avatar.webp",
       role: "admin",
       displayName: "Dirty Billy",
     },
@@ -27,12 +28,17 @@ const run = async () => {
       email: "user@mail.com",
       password: "admin123",
       token: "userToken",
-      avatar: "fixtures/avatar-1.webp",
       role: "user",
       displayName: "Double wide Joe",
     }
   );
 
+  await Gallery.create(
+    {user: user1, title: 'Beautiful nature', image: 'fixtures/nature.png'},
+    {user: user1, title: 'Stunning moutain', image: 'fixtures/mountain.jpg'},
+    {user: user2, title: 'SunFlowers', image: 'fixtures/sunflower.webp'},
+    {user: user2, title: 'Cutie Raccoon', image: 'fixtures/raccoon.jpg'},
+  )
   await db.close();
 }
 
