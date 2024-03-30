@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, CircularProgress, Menu, MenuItem} from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { selectUser } from '../../Features/users/usersSlice';
 import { logOutUser } from '../../Features/users/usersThunks';
@@ -45,6 +45,7 @@ const UserMenu = () => {
       </Button>
       <Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={handleClose} keepMounted>
         <MenuItem>Profile</MenuItem>
+        <MenuItem component={NavLink} to={`/my-gallery/${user._id}`}>My Gallery</MenuItem>
         <MenuItem onClick={() => setOpenModal(true)}>Logout</MenuItem>
       </Menu>
     </>

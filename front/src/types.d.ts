@@ -38,3 +38,10 @@ export interface RegisterResponse {
 export interface GlobalError {
   error: string;
 }
+
+export interface Gallery {
+  _id: string;
+  user: User;
+  title: string;
+  image: string;
+}

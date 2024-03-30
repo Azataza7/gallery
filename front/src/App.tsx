@@ -4,6 +4,7 @@ import Register from "./Features/users/Register"
 import Gallery from "./Features/userGalleries/Gallery"
 import AppToolbar from "./Components/AppToolbar/AppToolbar"
 import Login from "./Features/users/Login"
+import UserGallery from "./Features/userGalleries/UserGallery"
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
           </header>
           <Routes>
             <Route path="/" element={(<Gallery/>)}/>
+            <Route path="/my-gallery/:id" element={(<UserGallery/>)}/>
             <Route path="/register" element={(<Register/>)}/>
             <Route path="/login" element={(<Login/>)}/>
             <Route path="*" element={(

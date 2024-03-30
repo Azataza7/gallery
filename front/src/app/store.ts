@@ -12,6 +12,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import { userReducer } from '../Features/users/usersSlice';
+import { galleryReducer } from '../Features/userGalleries/gallerySlice';
 
 const usersPersistConfig = {
   key: "cocktail:users",
@@ -21,6 +22,7 @@ const usersPersistConfig = {
 
 const rootReducer = combineReducers({
   users: persistReducer(usersPersistConfig, userReducer),
+  gallery: galleryReducer
 });
 
 export const store = configureStore({
